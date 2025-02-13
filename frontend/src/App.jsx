@@ -4,6 +4,7 @@ import Login from "./components/login";
 import Navbar from "./components/Navbar";
 import AdminDashboard from "./components/AdminDashboard";
 import QuestionPage from "./components/QuestionPage";
+import Signup from "./components/Signup";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
     <Route path="/" element={<Login />} />
     <Route path="/adminDashboard" element={<AdminDashboard />} />
     <Route path="/questions" element={<QuestionPage />} />
+    <Route path="/signup" element={<Signup />} />
     
 
    </Routes>
