@@ -13,11 +13,11 @@ authRouter.get('/check',adminMiddleware,async(req,res)=>{
         const allData = await User.find(); 
         return res.json({ allData });
     } catch (error) {
-        res.status(500).json({ error: "Internal server error", message: error.message });
+        res.json({ error: "Internal server error", message: error.message });
     }
 })
 
-authRouter.post('/signup', async(req, res) => {
+authRouter.post('/signupuser', async(req, res) => {
     try {
         const { fullName, email, password } = req.body;
 
@@ -84,4 +84,10 @@ authRouter.post("/login", async (req, res) => {
     }
 })
 
+authRouter.post("/logout",async(req,res)=>{
+    res.cookie("token",null,{
+        expires:new Date(Date.now()),
+    })
+    res.send("Logout Successfully");
+});
 module.exports = authRouter;

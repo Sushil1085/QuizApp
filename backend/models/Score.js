@@ -13,7 +13,7 @@ const UserAttemptSchema = new mongoose.Schema({
     questions: [
         {
             questionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Question', required: true },
-            selectedOption: { type: String, required: true },
+            selectedOption: { type: String,default: null },
             isCorrect: { type: Boolean, required: true }
         }
     ],

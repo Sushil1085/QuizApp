@@ -1,8 +1,16 @@
-const QuizCards=({quizCards})=>{
-
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+const QuizCards=({quizCards,isUser,isAdmin})=>{
+    
+    const navigate=useNavigate();
+    const user=useSelector((state)=>state.user);
+    // console.log(user?.user?._id);
+    const id=user?.user?._id;
+    
     
     return(
         <>
+    
 <div className="flex flex-wrap">
             {quizCards.map((cards)=>{
             return(
@@ -12,7 +20,14 @@ const QuizCards=({quizCards})=>{
             <p class="font-normal text-gray-700 dark:text-gray-400">{cards.description}</p>
             <p class="font-normal text-gray-700 dark:text-gray-400">Time:{cards.timer}</p>
             <div className="flex justify-end dark:hover:bg-gray-700">
-            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Questions</button>
+            {isAdmin &&
+            <button type="button" 
+                onClick={()=>navigate(`/questions/${cards._id}`)}
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Questions</button>
+            }
+            {isUser &&  <button type="button" 
+                onClick={()=>navigate(`/questions/${cards._id}/${id}`)}
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Questions</button>}
             </div>
             </a>
             </div>

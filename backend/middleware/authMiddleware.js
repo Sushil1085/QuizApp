@@ -39,7 +39,7 @@ const adminMiddleware=async(req,res,next)=>{
             return res.send("Authentication token not found")
         }
 
-        const decodedObj=await jwt.verify(token,"QuizApp"); //before we can pass id while creating token now we can access id from token
+        const decodedObj=await jwt.verify(token,"QuizApp");
 
         const {_id}=decodedObj;
         const {role}=decodedObj;

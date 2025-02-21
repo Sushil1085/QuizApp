@@ -2,24 +2,36 @@ import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-rou
 import "./index.css";
 import Login from "./components/login";
 import Navbar from "./components/Navbar";
-import AdminDashboard from "./components/AdminDashboard";
+import Dashboard from "./components/Dashboard";
 import QuestionPage from "./components/QuestionPage";
-import Signup from "./components/Signup";
+import SignupAdmin from "./components/SignupAdmin";
+import QuizAdd from "./components/QuizAdd";
+import SignupUser from "./components/SignupUser";
+import {Provider} from "react-redux";
+import appStore from "./utils/appStore";
+import QuestionpageUser from "./components/QuestionpageUser";
+import ScoreCards from "./components/ScoreCards";
 
 
 function App() {
   return (
+    <Provider store={appStore}>
    <BrowserRouter>
-   <Navbar />
+   {/* <Navbar /> */}
    <Routes>
     <Route path="/" element={<Login />} />
-    <Route path="/adminDashboard" element={<AdminDashboard />} />
-    <Route path="/questions" element={<QuestionPage />} />
-    <Route path="/signup" element={<Signup />} />
+    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/questions/:id" element={<QuestionPage />} />
+    <Route path="/questions/:quizId/:userId" element={<QuestionpageUser />} />
+    <Route path="/signupAdmin" element={<SignupAdmin />} />
+    <Route path="/signupUser" element={<SignupUser />} />
+    <Route path="/quizAdd" element={<QuizAdd />} />
+    <Route path="/scorecard" element={<ScoreCards />} />
     
 
    </Routes>
    </BrowserRouter>
+   </Provider>
   );
 }
 

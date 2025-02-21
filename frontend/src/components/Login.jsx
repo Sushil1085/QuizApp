@@ -2,25 +2,39 @@ import { useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useNavigate } from "react-router";
-import Signup from "./Signup";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 
 const Login=()=>{
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
-    console.log(email,password);
-    console.log("snkdjsbh");
+    // console.log(email,password);
+    // console.log("snkdjsbh");
 
     const navigate=useNavigate();
+    const dispatch=useDispatch();
     
     
     const handleLogin=async(e)=>{
         e.preventDefault();
+        
+        if (!email && !password) {
+            alert("Please enter both email and password.");
+            return;
+        }
         try{
             const res=await axios.post(BASE_URL+"/login",{email,password},{
                 withCredentials:true})
-            if(res){
-                navigate("/adminDashboard");
+                // console.log(res);
+                
+            if(res.data ==="Incorrect password" || res.data.message === "User not found!"){
+              alert("Invalid email or password")
+                
+            }else{
+              dispatch(addUser(res.data));
+                localStorage.setItem("user", JSON.stringify(res.data));
+                navigate("/dashboard");
             }
         }catch(err){
             console.error(err);
@@ -61,11 +75,34 @@ const Login=()=>{
                   <button 
                     onClick={handleLogin}
                   type="submit" class="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 "><a href="#">Sign in</a></button>
-                  <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                      Don’t have an account yet? <a href="#" 
-                        onClick={navigate("/signup")}
-                      class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</a>
-                  </p>
+                  <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+  Are you an <span className="font-medium text-primary-600 dark:text-primary-500">Admin</span>?  
+  <a
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();
+      navigate("/signupadmin");
+    }}
+    className="ml-1 font-medium text-blue-600 hover:underline dark:text-blue-400"
+  >
+    Register here
+  </a>
+</p>
+
+<p className="text-sm font-light text-gray-500 dark:text-gray-400 mt-2">
+  Don’t have an account yet?  
+  <a
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();
+      navigate("/signupuser");
+    }}
+    className="ml-1 font-medium text-green-600 hover:underline dark:text-green-400"
+  >
+    Sign up
+  </a>
+</p>
+
               </form>
           </div>
       </div>

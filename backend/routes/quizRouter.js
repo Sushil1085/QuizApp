@@ -23,7 +23,23 @@ quizRouter.post("/addquiz",adminMiddleware,async(req,res)=>{
 
 });
 
-quizRouter.get("/allquiz",adminMiddleware,async(req,res)=>{
+quizRouter.delete("/deletequiz/:quizId", adminMiddleware, async (req, res) => {
+  try {
+      const { quizId } = req.params;
+
+      const deletedQuiz = await Quiz.findByIdAndDelete(quizId);
+
+      if (!deletedQuiz) {
+          return res.json({ message: "Quiz not found!" });
+      }
+
+      res.json({ message: "Quiz deleted successfully!", deletedQuiz });
+  } catch (err) {
+      res.json({ message: "Error while deleting quiz", error: err.message });
+  }
+});
+
+quizRouter.get("/allquiz",async(req,res)=>{
   try{
 
       const quiz=await Quiz.find({});
@@ -46,11 +62,7 @@ quizRouter.post("/addquestion/:quizId",adminMiddleware, async (req, res) => {
     }
   
     try {
-      const newQuestion = new Question({
-        quizId,         
-        questionText,   
-        options         
-      });
+      const newQuestion = new Question({quizId,questionText,options});
   
       await newQuestion.save();
     // console.log(newQuestion);
@@ -63,10 +75,28 @@ quizRouter.post("/addquestion/:quizId",adminMiddleware, async (req, res) => {
     }
   });
 
-  quizRouter.get("/allquestions",async(req,res)=>{
+  quizRouter.delete("/deletequestion/:questionId", adminMiddleware, async (req, res) => {
+    try {
+        const { questionId } = req.params;
+
+        const deletedQuestion = await Question.findByIdAndDelete(questionId);
+
+        if (!deletedQuestion) {
+            return res.status(404).json({ message: "Question not found!" });
+        }
+
+        res.json({ message: "Question deleted successfully!", deletedQuestion });
+    } catch (err) {
+        res.status(500).json({ message: "Error while deleting question", error: err.message });
+    }
+});
+
+
+  quizRouter.get("/allquestions/:quizId",async(req,res)=>{
+      const {quizId}=req.params;
     try{
 
-        const questions=await Question.find({}).populate("quizId",["title","description","timer"]);
+        const questions=await Question.find({quizId}).populate("quizId",["title","description","timer"]);
 
         res.json(questions);
     } catch (error) {
@@ -78,6 +108,7 @@ quizRouter.post("/addquestion/:quizId",adminMiddleware, async (req, res) => {
   quizRouter.post("/submitquiz/:quizId/:userId", async (req, res) => {
     try {
         const { answers } = req.body;
+                
         const {userId, quizId}=req.params;
         const questions = await Question.find({ quizId });
         let score = 0;
@@ -113,6 +144,19 @@ quizRouter.post("/addquestion/:quizId",adminMiddleware, async (req, res) => {
         res.status(500).json({ message: "Failed to submit quiz", error: error.message });
     }
 });
+
+quizRouter.get("/scoreboard", async (req, res) => {
+    try {
+        const {quizId}=req.params;
+        const userAttempts = await UserAttempt.find({ }).populate("userId", ["fullName", "email"]).populate("quizId",["title"]).sort({ score: -1 });
+
+        res.json(userAttempts);
+    } catch (error) {
+        console.error("Error while fetching scoreboard:", error);
+        res.status(500).json({ message: "Failed to fetch scoreboard", error: error.message });
+    }
+});
+
 
 
 module.exports=quizRouter;
